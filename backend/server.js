@@ -34,25 +34,25 @@ async function modifyPdf(templatePath, data, outputPath) {
 
     //  REPLACE WITH YOUR ACTUAL COORDINATES
     const replacements = {
-      '<<TRADE>>': { x: 328.32, y: 687.6, value: data.trade },
-      '<<FIRST_NAME>><<LAST_NAME>>': { x: 328.32, y: 620, value: data.firstName + ' ' + data.lastName },
-      '<<FATHERS_NAME>>': { x: 328.32, y: 598, value: data.fathersName },
-      '<<DOB>>': { x: 328.32, y: 575, value: data.dob },
-      '<<MARITAL_STATUS>>': { x: 328.32, y: 553, value: data.maritalStatus },
-      '<<RELIGION>>': { x: 328.32, y: 532, value: data.religion },
-      '<<EDU>>': { x: 328.32, y: 465, value: data.education },
-      '<<ADDRESS>>': { x: 328.32, y: 443, value: data.address },
-      '<<CONTACT_PERSON>>': { x: 351.32, y: 421.50, value: data.contact },
-      '<<PP_NO>>': { x: 43, y: 346, value: data.passportNumber },
-      '<<PLACE_OF_ISSUE>>': { x: 161, y: 346, value: data.placeOfIssue },
-      '<<DOI>>': { x: 289, y: 346, value: data.dateOfIssue },
-      '<<DOE>>': { x: 398, y: 346, value: data.dateOfExpiry },
-      '<<PP_TYPE>>': { x: 502, y: 346, value: data.ppType },
-      '<<DESIGNATION>>': { x: 267, y: 250, value: data.designation },
-      '<<IND_EXP>>': { x: 420, y: 253, value: data.indiaExperience },
-      '<<ABR_DESIGNATION>>': { x: 267, y: 230, value: data.abrDesignation },
-      '<<GCC_EXP>>': { x: 420 , y: 230 , value: data.gccExperience },
-      '<<SIGNATURE>>': { x: 420 , y: 175 , value: data.signature },
+      '<<TRADE>>': { x: 328.32, y: 686, value: data.trade },
+      '<<FIRST_NAME>><<LAST_NAME>>': { x: 328.32, y: 610, value: data.firstName + ' ' + data.lastName },
+      '<<FATHERS_NAME>>': { x: 328.32, y: 586, value: data.fathersName },
+      '<<DOB>>': { x: 328.32, y: 560, value: data.dob },
+      '<<MARITAL_STATUS>>': { x: 328.32, y: 535, value: data.maritalStatus },
+      '<<RELIGION>>': { x: 328.32, y: 510, value: data.religion },
+      '<<EDU>>': { x: 328.32, y: 433, value: data.education },
+      '<<ADDRESS>>': { x: 328.32, y: 407, value: data.address },
+      '<<CONTACT_PERSON>>': { x: 347, y: 382.50, value: data.contact },
+      '<<PP_NO>>': { x: 43, y: 300, value: data.passportNumber },
+      '<<PLACE_OF_ISSUE>>': { x: 161, y: 300, value: data.placeOfIssue },
+      '<<DOI>>': { x: 270, y: 300, value: data.dateOfIssue },
+      '<<DOE>>': { x: 392, y: 300, value: data.dateOfExpiry },
+      '<<PP_TYPE>>': { x: 505, y: 300, value: data.ppType },
+      '<<DESIGNATION>>': { x: 267, y: 202, value: data.designation },
+      '<<IND_EXP>>': { x: 420, y: 202, value: data.indiaExperience },
+      '<<ABR_DESIGNATION>>': { x: 267, y: 180, value: data.abrDesignation },
+      '<<GCC_EXP>>': { x: 420 , y: 180 , value: data.gccExperience },
+      '<<SIGNATURE>>': { x: 420 , y: 125 , value: data.signature },
     };
 
     for (const tag in replacements) {
@@ -79,7 +79,7 @@ async function modifyPdf(templatePath, data, outputPath) {
 app.post('/generate-resume', async (req, res) => {
   try {
     const userData = req.body;
-    const pdfBytes = await modifyPdf('CV FORMAT1.pdf', userData, 'output.pdf'); //  Template path
+    const pdfBytes = await modifyPdf('CV FORMAT2.pdf', userData, 'output.pdf'); //  Template path
     res.contentType('application/pdf');
     res.send(Buffer.from(pdfBytes));
   } catch (error) {
