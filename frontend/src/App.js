@@ -35,7 +35,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/generate-resume', formData, {
+      const response = await axios.post('https://resume-builder-backend-wine.vercel.app/', formData, {
         responseType: 'arraybuffer',
         headers: {
           'Content-Type': 'application/json',
