@@ -35,7 +35,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('/api/generate-resume', formData, {
+      const response = await axios.post('https://resume-builder-backend-dusky.vercel.app/api/generate-resume', formData, {
         responseType: 'arraybuffer',
         headers: {
           'Content-Type': 'application/json',
