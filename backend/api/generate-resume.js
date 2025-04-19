@@ -14,7 +14,7 @@ const embedFont = async (pdfDoc, fontName) => {
 // Modified modifyPdf function (adjust file access)
 const modifyPdf = async (data) => {
   try {
-    const pdfBytes = await fs.readFile(`${__dirname}/../CV FORMAT.pdf`);
+    const pdfBytes = await fs.readFile(`${__dirname}/../CV FORMAT2.pdf`);
     const pdfDoc = await PDFDocument.load(pdfBytes);
     const pages = pdfDoc.getPages();
     const firstPage = pages[0];
@@ -90,4 +90,4 @@ export default async function handler(req, res) {
     console.error(error);
     res.status(500).send('Error generating PDF');
   }
-}
+}   
