@@ -35,14 +35,14 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://resume-builder-backend-wine.vercel.app/', formData, {
+      const response = await axios.post('https://resume-builder-backend-nu.vercel.app/api/generate-resume', formData, {
         responseType: 'arraybuffer',
         headers: {
           'Content-Type': 'application/json',
         },
       });
       const blob = new Blob([response.data], { type: 'application/pdf' });
-      saveAs(blob, 'resume.pdf');
+      saveAs(blob, `${formData.firstName}_${formData.lastName}_Resume.pdf`); //  Construct filename
     } catch (error) {
       console.error(error);
       alert('Error generating resume');
