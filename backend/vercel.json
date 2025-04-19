@@ -16,7 +16,7 @@
                 },
                 {
                     "key": "Access-Control-Allow-Origin",
-                    "value": "https://resume-builder-backend-nu.vercel.app" // Replace with your domain
+                    "value": "https://resume-builder-ten-self.vercel.app" 
                 },
                 {
                     "key": "Access-Control-Allow-Methods",
