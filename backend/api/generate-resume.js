@@ -1,6 +1,7 @@
 const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
+const fs = require('fs').promises;
 
-//  Helper function to embed font
+// Helper function to embed font
 const embedFont = async (pdfDoc, fontName) => {
   try {
     return await pdfDoc.embedFont(StandardFonts[fontName]);
@@ -10,7 +11,7 @@ const embedFont = async (pdfDoc, fontName) => {
   }
 };
 
-//  Modified modifyPdf function (adjust file access)
+// Modified modifyPdf function (adjust file access)
 const modifyPdf = async (data) => {
   try {
     const pdfBytes = await fs.readFile(`${__dirname}/../CV FORMAT.pdf`);
@@ -62,21 +63,29 @@ const modifyPdf = async (data) => {
 };
 
 export default async function handler(req, res) {
+  // Enable CORS for all origins (for development - adjust for production)
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
   if (req.method !== 'POST') {
-    return res.status(405).end(); //  Method Not Allowed
+    return res.status(405).end(); // Method Not Allowed
   }
 
   try {
     const userData = req.body;
     const pdfBytes = await modifyPdf(userData);
+    const filename = `${userData.firstName}_${userData.lastName}_Resume.pdf`;
 
-    const filename = `${userData.firstName}_${userData.lastName}_Resume.pdf`; //  Construct filename
-
-    //  Set headers for file download
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`); //  Force download
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     res.status(200).send(Buffer.from(pdfBytes));
-
   } catch (error) {
     console.error(error);
     res.status(500).send('Error generating PDF');
