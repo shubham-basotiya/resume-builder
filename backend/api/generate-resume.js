@@ -1,3 +1,5 @@
+import { Console } from 'console';
+
 const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
 const fs = require('fs').promises;
 
@@ -68,15 +70,17 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
+  console.log(`Hello from backend! Request Method: ${req.method}`);
+  
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
   }
 
-  if (req.method !== 'POST') {
-    return res.status(405).end(); // Method Not Allowed
-  }
+//   if (req.method !== 'POST') {
+//     return res.status(405).end(); // Method Not Allowed
+//   }
 
   try {
     const userData = req.body;
