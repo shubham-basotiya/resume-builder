@@ -1,7 +1,17 @@
 {
+  "name": "resume-generator-api",
+  "version": "1.0.0",
+  "description": "API for generating resumes",
+  "main": "api/generate-resume.js", //  Vercel uses this, but it's more for npm
+  "scripts": {
+    "start": "node api/generate-resume.js", //  For local testing (optional)
+    "dev": "nodemon api/generate-resume.js"   //  For local development (optional)
+  },
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^5.1.0",
-    "pdf-lib": "^1.17.1"
+    "pdf-lib": "^1.17.1", //  Or your version
+    "fs-extra": "^11.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }

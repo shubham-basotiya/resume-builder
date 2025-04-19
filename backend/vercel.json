@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/generate-resume.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/generate-resume", "dest": "api/generate-resume.js", "methods": ["POST"] }
+  ]
+}

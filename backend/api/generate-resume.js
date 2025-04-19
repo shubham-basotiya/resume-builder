@@ -1,38 +1,25 @@
-// backend/server.js
-const express = require('express');
 const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
-const fs = require('fs').promises;
-const cors = require('cors'); //  For cross-origin requests
-const app = express();
-app.use(cors());
-app.use(express.json());
 
-async function modifyPdf(templatePath, data, outputPath) {
+//  Helper function to embed font
+const embedFont = async (pdfDoc, fontName) => {
   try {
-    const pdfBytes = await fs.readFile(templatePath);
+    return await pdfDoc.embedFont(StandardFonts[fontName]);
+  } catch (error) {
+    console.warn(`Font "${fontName}" not found, using Helvetica`);
+    return await pdfDoc.embedFont(StandardFonts.Helvetica);
+  }
+};
+
+//  Modified modifyPdf function (adjust file access)
+const modifyPdf = async (data) => {
+  try {
+    const pdfBytes = await fs.readFile(`${__dirname}/../CV FORMAT.pdf`);
     const pdfDoc = await PDFDocument.load(pdfBytes);
     const pages = pdfDoc.getPages();
-    const firstPage = pages[0]; // Assuming all replacements are on the first page
+    const firstPage = pages[0];
 
-    //  Helper function to embed font (simplified)
-    const embedFont = async (fontName) => {
-      try {
-        return await pdfDoc.embedFont(StandardFonts[fontName]);
-      } catch (error) {
-        console.warn(`Font "${fontName}" not found, using Helvetica`);
-        return await pdfDoc.embedFont(StandardFonts.Helvetica);
-      }
-    };
+    const font = await embedFont(pdfDoc, 'Helvetica');
 
-    const font = await embedFont('Helvetica'); //  Default font
-
-    //  This is where the magic (and complexity) happens
-    //  YOU WILL NEED TO CAREFULLY DETERMINE THE X, Y COORDINATES
-    //  for each piece of text in your template.  This is VERY manual.
-    //  PDF editors often show coordinates.  Libraries exist to parse PDFs
-    //  to get this data, but they are complex.
-
-    //  REPLACE WITH YOUR ACTUAL COORDINATES
     const replacements = {
       '<<TRADE>>': { x: 328.32, y: 686, value: data.trade },
       '<<FIRST_NAME>><<LAST_NAME>>': { x: 328.32, y: 610, value: data.firstName + ' ' + data.lastName },
@@ -51,8 +38,8 @@ async function modifyPdf(templatePath, data, outputPath) {
       '<<DESIGNATION>>': { x: 267, y: 202, value: data.designation },
       '<<IND_EXP>>': { x: 420, y: 202, value: data.indiaExperience },
       '<<ABR_DESIGNATION>>': { x: 267, y: 180, value: data.abrDesignation },
-      '<<GCC_EXP>>': { x: 420 , y: 180 , value: data.gccExperience },
-      '<<SIGNATURE>>': { x: 420 , y: 125 , value: data.signature },
+      '<<GCC_EXP>>': { x: 420, y: 180, value: data.gccExperience },
+      '<<SIGNATURE>>': { x: 420, y: 125, value: data.signature },
     };
 
     for (const tag in replacements) {
@@ -61,30 +48,37 @@ async function modifyPdf(templatePath, data, outputPath) {
         x,
         y,
         font,
-        size: 11, //  Adjust as needed
-        color: rgb(0, 0, 0), //  Black
+        size: 11,
+        color: rgb(0, 0, 0),
       });
     }
 
     const modifiedPdfBytes = await pdfDoc.save();
-    await fs.writeFile(outputPath, modifiedPdfBytes);  //  For debugging/saving
-
     return modifiedPdfBytes;
   } catch (error) {
     console.error('Error modifying PDF:', error);
-    throw error;    
+    throw error;
   }
-}
+};
 
-app.post('/generate-resume', async (req, res) => {
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).end(); //  Method Not Allowed
+  }
+
   try {
     const userData = req.body;
-    const pdfBytes = await modifyPdf('CV FORMAT2.pdf', userData, 'output.pdf'); //  Template path
-    res.contentType('application/pdf');
-    res.send(Buffer.from(pdfBytes));
+    const pdfBytes = await modifyPdf(userData);
+
+    const filename = `${userData.firstName}_${userData.lastName}_Resume.pdf`; //  Construct filename
+
+    //  Set headers for file download
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`); //  Force download
+    res.status(200).send(Buffer.from(pdfBytes));
+
   } catch (error) {
+    console.error(error);
     res.status(500).send('Error generating PDF');
   }
-});
-
-app.listen(5000, () => console.log('Server started on port 5000'));
+}
