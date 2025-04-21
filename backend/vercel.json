@@ -4,6 +4,6 @@
     { "src": "api/generate-resume.js", "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/api/generate-resume", "dest": "api/generate-resume.js", "methods": ["POST"] }
+    { "src": "/api/generate-resume", "dest": "api/generate-resume.js", "methods": ["POST", "OPTIONS"] }
   ]
 }
